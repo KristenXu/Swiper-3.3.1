@@ -190,9 +190,7 @@
             onSetTransition: function (swiper, duration)
             onSetTranslate: function (swiper, translate)
             onAutoplayStart: function (swiper)
-            onAutoplayStop: function (swiper),
-            onLazyImageLoad: function (swiper, slide, image)
-            onLazyImageReady: function (swiper, slide, image)
+            onAutoplayStop: function (swiper)
             */
         
         };
@@ -2879,7 +2877,7 @@
             if (s.params.observer && s.support.observer) {
                 s.initObservers();
             }
-            if (s.params.preloadImages && !s.params.lazyLoading) {
+            if (s.params.preloadImages) {
                 s.preloadImages();
             }
             if (s.params.autoplay) {
