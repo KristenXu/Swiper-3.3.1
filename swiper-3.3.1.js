@@ -55,8 +55,6 @@
             fade: {
                 crossFade: false
             },
-            // Hash Navigation
-            hashnav: false,
             // Breakpoints
             breakpoints: undefined,
             // Slides grid
@@ -1853,10 +1851,6 @@
                     }
                 }
             }
-            if (s.params.hashnav && s.hashnav) {
-                s.hashnav.setHash();
-            }
-        
         };
         s.slideNext = function (runCallbacks, speed, internal) {
             if (s.params.loop) {
@@ -2591,32 +2585,6 @@
                 }
             }
         };
-
-        /*=========================
-          Hash Navigation
-          ===========================*/
-        s.hashnav = {
-            init: function () {
-                if (!s.params.hashnav) return;
-                s.hashnav.initialized = true;
-                var hash = document.location.hash.replace('#', '');
-                if (!hash) return;
-                var speed = 0;
-                for (var i = 0, length = s.slides.length; i < length; i++) {
-                    var slide = s.slides.eq(i);
-                    var slideHash = slide.attr('data-hash');
-                    if (slideHash === hash && !slide.hasClass(s.params.slideDuplicateClass)) {
-                        var index = slide.index();
-                        s.slideTo(index, speed, s.params.runCallbacksOnInit, true);
-                    }
-                }
-            },
-            setHash: function () {
-                if (!s.hashnav.initialized || !s.params.hashnav) return;
-                document.location.hash = s.slides.eq(s.activeIndex).attr('data-hash') || '';
-            }
-        };
-
         /*=========================
           Plugins API. Collect all and init all plugins
           ===========================*/
@@ -2813,9 +2781,6 @@
             }
             if (s.params.autoplay) {
                 s.startAutoplay();
-            }
-            if (s.params.hashnav) {
-                if (s.hashnav) s.hashnav.init();
             }
             if (s.params.a11y && s.a11y) s.a11y.init();
             s.emit('onInit', s);
