@@ -359,18 +359,6 @@
             return s.params.direction === 'horizontal';
         };
         // s.isH = isH;
-        
-        // RTL
-        s.rtl = s.isHorizontal() && (s.container[0].dir.toLowerCase() === 'rtl' || s.container.css('direction') === 'rtl');
-        if (s.rtl) {
-            s.classNames.push('swiper-container-rtl');
-        }
-        
-        // Wrong RTL support
-        if (s.rtl) {
-            s.wrongRTL = s.wrapper.css('display') === '-webkit-box';
-        }
-        
         // Columns
         if (s.params.slidesPerColumn > 1) {
             s.classNames.push('swiper-container-multirow');
@@ -598,8 +586,7 @@
         
             s.virtualSize = -spaceBetween;
             // reset margins
-            if (s.rtl) s.slides.css({marginLeft: '', marginTop: ''});
-            else s.slides.css({marginRight: '', marginBottom: ''});
+            s.slides.css({marginRight: '', marginBottom: ''});
         
             var slidesNumberEvenToRows;
             if (s.params.slidesPerColumn > 1) {
@@ -699,8 +686,7 @@
             s.virtualSize = Math.max(s.virtualSize, s.size) + s.params.slidesOffsetAfter;
             var newSlidesGrid;
         
-            if (
-                s.rtl && s.wrongRTL && (s.params.effect === 'slide' || s.params.effect === 'coverflow')) {
+            if (s.params.effect === 'slide' || s.params.effect === 'coverflow') {
                 s.wrapper.css({width: s.virtualSize + s.params.spaceBetween + 'px'});
             }
             if (!s.support.flexbox || s.params.setWrapperSize) {
@@ -738,8 +724,7 @@
         
             if (s.params.spaceBetween !== 0) {
                 if (s.isHorizontal()) {
-                    if (s.rtl) s.slides.css({marginLeft: spaceBetween + 'px'});
-                    else s.slides.css({marginRight: spaceBetween + 'px'});
+                    s.slides.css({marginRight: spaceBetween + 'px'});
                 }
                 else s.slides.css({marginBottom: spaceBetween + 'px'});
             }
@@ -764,8 +749,7 @@
             if (typeof s.slides[0].swiperSlideOffset === 'undefined') s.updateSlidesOffset();
         
             var offsetCenter = -translate;
-            if (s.rtl) offsetCenter = translate;
-        
+
             // Visible Slides
             s.slides.removeClass(s.params.slideVisibleClass);
             for (var i = 0; i < s.slides.length; i++) {
@@ -782,7 +766,7 @@
                         s.slides.eq(i).addClass(s.params.slideVisibleClass);
                     }
                 }
-                slide.progress = s.rtl ? -slideProgress : slideProgress;
+                slide.progress = slideProgress;
             }
         };
         s.updateProgress = function (translate) {
@@ -808,7 +792,7 @@
             s.emit('onProgress', s, s.progress);
         };
         s.updateActiveIndex = function () {
-            var translate = s.rtl ? s.translate : -s.translate;
+            var translate = -s.translate;
             var newActiveIndex, i, snapIndex;
             for (i = 0; i < s.slidesGrid.length; i ++) {
                 if (typeof s.slidesGrid[i + 1] !== 'undefined') {
@@ -1421,8 +1405,7 @@
             var diff = s.touches.diff = s.isHorizontal() ? s.touches.currentX - s.touches.startX : s.touches.currentY - s.touches.startY;
         
             diff = diff * s.params.touchRatio;
-            if (s.rtl) diff = -diff;
-        
+
             s.swipeDirection = diff > 0 ? 'prev' : 'next';
             currentTranslate = diff + startTranslate;
         
@@ -1535,7 +1518,7 @@
         
             var currentPos;
             if (s.params.followFinger) {
-                currentPos = s.rtl ? s.translate : -s.translate;
+                currentPos = -s.translate;
             }
             else {
                 currentPos = -currentTranslate;
@@ -1580,7 +1563,6 @@
                     var momentumDistance = s.velocity * momentumDuration;
         
                     var newPosition = s.translate + momentumDistance;
-                    if (s.rtl) newPosition = - newPosition;
                     var doBounce = false;
                     var afterBouncePosition;
                     var bounceAmount = Math.abs(s.velocity) * 20 * s.params.freeModeMomentumBounceRatio;
@@ -1625,16 +1607,10 @@
                         } else {
                             newPosition = s.snapGrid[nextSlide - 1];
                         }
-                        if (!s.rtl) newPosition = - newPosition;
                     }
                     //Fix duration
                     if (s.velocity !== 0) {
-                        if (s.rtl) {
-                            momentumDuration = Math.abs((-newPosition - s.translate) / s.velocity);
-                        }
-                        else {
-                            momentumDuration = Math.abs((newPosition - s.translate) / s.velocity);
-                        }
+                        momentumDuration = Math.abs((newPosition - s.translate) / s.velocity);
                     }
                     else if (s.params.freeModeSticky) {
                         s.slideReset();
@@ -1781,7 +1757,7 @@
             s.previousIndex = s.activeIndex || 0;
             s.activeIndex = slideIndex;
         
-            if ((s.rtl && -translate === s.translate) || (!s.rtl && translate === s.translate)) {
+            if (translate === s.translate) {
                 // Update Height
                 if (s.params.autoHeight) {
                     s.updateAutoHeight();
@@ -1896,7 +1872,7 @@
         s.setWrapperTranslate = function (translate, updateActiveIndex, byController) {
             var x = 0, y = 0, z = 0;
             if (s.isHorizontal()) {
-                x = s.rtl ? -translate : translate;
+                x = translate;
             }
             else {
                 y = translate;
@@ -1946,7 +1922,7 @@
             }
         
             if (s.params.virtualTranslate) {
-                return s.rtl ? -s.translate : s.translate;
+                return s.translate;
             }
         
             curStyle = window.getComputedStyle(el, null);
@@ -1988,7 +1964,6 @@
                 else
                     curTransform = parseFloat(matrix[5]);
             }
-            if (s.rtl && curTransform) curTransform = -curTransform;
             return curTransform || 0;
         };
         s.getWrapperTranslate = function (axis) {
@@ -2257,9 +2232,6 @@
                             rotateX = -rotateY;
                             rotateY = 0;
                         }
-                        else if (s.rtl) {
-                            rotateY = -rotateY;
-                        }
         
                         slide[0].style.zIndex = -Math.abs(Math.round(progress)) + s.slides.length;
         
@@ -2325,10 +2297,6 @@
                         var slide = s.slides.eq(i);
                         var slideAngle = i * 90;
                         var round = Math.floor(slideAngle / 360);
-                        if (s.rtl) {
-                            slideAngle = -slideAngle;
-                            round = Math.floor(-slideAngle / 360);
-                        }
                         var progress = Math.max(Math.min(slide[0].progress, 1), -1);
                         var tx = 0, ty = 0, tz = 0;
                         if (i % 4 === 0) {
@@ -2347,9 +2315,6 @@
                             tx = - s.size;
                             tz = 3 * s.size + s.size * 4 * round;
                         }
-                        if (s.rtl) {
-                            tx = -tx;
-                        }
         
                         if (!s.isHorizontal()) {
                             ty = tx;
@@ -2359,7 +2324,6 @@
                         var transform = 'rotateX(' + (s.isHorizontal() ? 0 : -slideAngle) + 'deg) rotateY(' + (s.isHorizontal() ? slideAngle : 0) + 'deg) translate3d(' + tx + 'px, ' + ty + 'px, ' + tz + 'px)';
                         if (progress <= 1 && progress > -1) {
                             wrapperRotate = i * 90 + progress * 90;
-                            if (s.rtl) wrapperRotate = -i * 90 - progress * 90;
                         }
                         slide.transform(transform);
                         if (s.params.cube.slideShadows) {
@@ -2524,7 +2488,7 @@
                     // x is the Grid of the scrolled scroller and y will be the controlled scroller
                     // it makes sense to create this only once and recall it for the interpolation
                     // the function does a lot of value caching for performance
-                    translate = c.rtl && c.params.direction === 'horizontal' ? -s.translate : s.translate;
+                    translate = s.translate;
                     if (s.params.controlBy === 'slide') {
                         s.controller.getInterpolateFunction(c);
                         // i am not sure why the values have to be multiplicated this way, tried to invert the snapGrid
