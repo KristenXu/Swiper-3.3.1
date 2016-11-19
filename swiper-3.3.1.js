@@ -88,9 +88,6 @@
             paginationClickable: false,
             paginationHide: false,
             paginationBulletRender: null,
-            paginationProgressRender: null,
-            paginationFractionRender: null,
-            paginationCustomRender: null,
             paginationType: 'bullets', // 'bullets' or 'progress' or 'fraction' or 'custom'
             // Resistance
             resistance: true,
@@ -880,24 +877,6 @@
                         s.bullets.eq(current).addClass(s.params.bulletActiveClass);
                     }
                 }
-                if (s.params.paginationType === 'fraction') {
-                    s.paginationContainer.find('.' + s.params.paginationCurrentClass).text(current + 1);
-                    s.paginationContainer.find('.' + s.params.paginationTotalClass).text(total);
-                }
-                if (s.params.paginationType === 'progress') {
-                    var scale = (current + 1) / total,
-                        scaleX = scale,
-                        scaleY = 1;
-                    if (!s.isHorizontal()) {
-                        scaleY = scale;
-                        scaleX = 1;
-                    }
-                    s.paginationContainer.find('.' + s.params.paginationProgressbarClass).transform('translate3d(0,0,0) scaleX(' + scaleX + ') scaleY(' + scaleY + ')').transition(s.params.speed);
-                }
-                if (s.params.paginationType === 'custom' && s.params.paginationCustomRender) {
-                    s.paginationContainer.html(s.params.paginationCustomRender(s, current + 1, total));
-                    s.emit('onPaginationRendered', s, s.paginationContainer[0]);
-                }
             }
         
             // Next/active buttons
@@ -947,30 +926,6 @@
                     if (s.params.paginationClickable && s.params.a11y && s.a11y) {
                         s.a11y.initPagination();
                     }
-                }
-                if (s.params.paginationType === 'fraction') {
-                    if (s.params.paginationFractionRender) {
-                        paginationHTML = s.params.paginationFractionRender(s, s.params.paginationCurrentClass, s.params.paginationTotalClass);
-                    }
-                    else {
-                        paginationHTML =
-                            '<span class="' + s.params.paginationCurrentClass + '"></span>' +
-                            ' / ' +
-                            '<span class="' + s.params.paginationTotalClass+'"></span>';
-                    }
-                    s.paginationContainer.html(paginationHTML);
-                }
-                if (s.params.paginationType === 'progress') {
-                    if (s.params.paginationProgressRender) {
-                        paginationHTML = s.params.paginationProgressRender(s, s.params.paginationProgressbarClass);
-                    }
-                    else {
-                        paginationHTML = '<span class="' + s.params.paginationProgressbarClass + '"></span>';
-                    }
-                    s.paginationContainer.html(paginationHTML);
-                }
-                if (s.params.paginationType !== 'custom') {
-                    s.emit('onPaginationRendered', s, s.paginationContainer[0]);
                 }
             }
         };
