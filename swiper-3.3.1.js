@@ -103,8 +103,6 @@
             // Progress
             watchSlidesProgress: false,
             watchSlidesVisibility: false,
-            // Cursor
-            grabCursor: false,
             // Clicks
             preventClicks: true,
             preventClicksPropagation: true,
@@ -324,11 +322,6 @@
             }
         }
         
-        // Grab Cursor
-        if (s.params.grabCursor && s.support.touch) {
-            s.params.grabCursor = false;
-        }
-        
         // Wrapper
         s.wrapper = s.container.children('.' + s.params.wrapperClass);
         
@@ -429,15 +422,6 @@
           ===========================*/
         function round(a) {
             return Math.floor(a);
-        }
-        /*=========================
-          Set grab cursor
-          ===========================*/
-        if (s.params.grabCursor) {
-            s.container[0].style.cursor = 'move';
-            s.container[0].style.cursor = '-webkit-grab';
-            s.container[0].style.cursor = '-moz-grab';
-            s.container[0].style.cursor = 'grab';
         }
         /*=========================
           Update on Images Ready
@@ -1433,13 +1417,6 @@
                     }
                 }
                 allowMomentumBounce = false;
-                //Grab Cursor
-                if (s.params.grabCursor) {
-                    s.container[0].style.cursor = 'move';
-                    s.container[0].style.cursor = '-webkit-grabbing';
-                    s.container[0].style.cursor = '-moz-grabbin';
-                    s.container[0].style.cursor = 'grabbing';
-                }
             }
             isMoved = true;
         
@@ -1521,13 +1498,6 @@
             }
             allowTouchCallbacks = false;
             if (!isTouched) return;
-            //Return Grab Cursor
-            if (s.params.grabCursor && isMoved && isTouched) {
-                s.container[0].style.cursor = 'move';
-                s.container[0].style.cursor = '-webkit-grab';
-                s.container[0].style.cursor = '-moz-grab';
-                s.container[0].style.cursor = 'grab';
-            }
         
             // Time diff
             var touchEndTime = Date.now();
